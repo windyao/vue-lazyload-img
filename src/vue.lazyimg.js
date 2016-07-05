@@ -5,6 +5,7 @@
  * capable of require.js, sea.js, CommonJS
  * @author: JALBAA
  * @email: 116682877@qq.com
+ * updated by Wind @ 20160705 for compatible android 4.3
  */
 var Vue = require('vue')
 Vue.lazyimg ={
