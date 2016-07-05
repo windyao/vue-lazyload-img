@@ -5,9 +5,8 @@
  * capable of require.js, sea.js, CommonJS
  * @author: JALBAA
  * @email: 116682877@qq.com
- * updated by Wind @ 20160705 for compatible android 4.3
  */
-var Vue = require('vue')
+var Vue = require('vue');
 Vue.lazyimg ={
     install: function(Vue,options){
         options = options || {
@@ -16,35 +15,54 @@ Vue.lazyimg ={
             nohori: false
         }
         //custom scrollEnd event
-        if(options.speed){
-            var cntr = 0
-            var lastCntr = 0
-            var diff = 0
+        if ( options.speed ) {
+            var cntr = 0;
+            var lastCntr = 0;
+            var diff = 0;
             var scrollEnd = document.createEvent('HTMLEvents');
-            scrollEnd.initEvent('scrollEnd',true,false)
-            scrollEnd.eventType = 'message'
-            function enterFrame(){
-                if(cntr != lastCntr){
-                    diff++
+            scrollEnd.initEvent('scrollEnd',true,false);
+            scrollEnd.eventType = 'message';
+
+            var enterFrame = setInterval(function () {
+                if ( cntr != lastCntr ) {
+                    diff++;
                     if(diff == 5){
-                        window.dispatchEvent(scrollEnd)
-                        cntr = lastCntr
+                        window.dispatchEvent(scrollEnd);
+                        cntr = lastCntr;
+                    }
+                } else {
+                    clearInterval(enterFrame);
+                    enterFrame = null;
+                }
+            }, 250);
+
+            /*
+            //android 4.3 及以下不支持requestAnimationFrame
+            function enterFrame(){
+                if( cntr != lastCntr ){
+                    diff++;
+                    if(diff == 5){
+                        window.dispatchEvent(scrollEnd);
+                        cntr = lastCntr;
                     }
                 }
                 requestAnimationFrame(enterFrame);
-            }
-            window.requestAnimationFrame(enterFrame)
+            }            
+            window.requestAnimationFrame(enterFrame);
+            */
+
             document.addEventListener('scroll',function(){
-                lastCntr = cntr
-                diff = 0
-                cntr++
+                lastCntr = cntr;
+                diff = 0;
+                cntr++;
             },true)
         }
         //compute scroll speed
-        var lastPosY = document.body ? document.body.getBoundingClientRect().top : document.head.parentNode.getBoundingClientRect().top
-        var lastPosX = document.body ? document.body.getBoundingClientRect().left : document.head.parentNode.getBoundingClientRect().left
-        var lastSpeeds = []
-        var aveSpeed = 0
+        var lastPosY = document.body ? document.body.getBoundingClientRect().top : document.head.parentNode.getBoundingClientRect().top;
+        var lastPosX = document.body ? document.body.getBoundingClientRect().left : document.head.parentNode.getBoundingClientRect().left;
+        var lastSpeeds = [];
+        var aveSpeed = 0;
+        
         function getSpeed(el){
             var curPosY = el ? el.getBoundingClientRect().top : 0
             var curPosX = el ? el.getBoundingClientRect().left: 0
@@ -65,7 +83,7 @@ Vue.lazyimg ={
             lastPosX = curPosX
         }
         document.addEventListener('scroll',function(e){
-            if(!options.speed) return
+            if(!options.speed) {return;}
             var el = null
             for(var i=0; i<e.target.childNodes.length; i++){
                 if(e.target.childNodes[i].nodeType == 1){
@@ -86,9 +104,6 @@ Vue.lazyimg ={
                 this.el.style.webkitTransition = 'opacity .3s'
             }
             var compute = function(){
-                if (this.el === null) {
-                    return;
-                }
                 var rect = this.el.getBoundingClientRect();
                 var vpWidth = document.head.parentNode.clientWidth
                 var vpHeight = document.head.parentNode.clientHeight
@@ -116,15 +131,12 @@ Vue.lazyimg ={
             }.bind(this)
             var onload = function(){
                 compute();
-                this.el && this.el.removeEventListener('load',onload)
+                this.el.removeEventListener('load',onload)
                 window.addEventListener('scrollEnd',compute,true)
                 window.addEventListener('resize',compute,true)
                 window.addEventListener('scroll',computeBySpeed,true)
             }.bind(this)
             var onloadEnd = function(){
-                if (this.el === null) {
-                    return;
-                }
                 if(isFadeIn)
                     this.el.style.opacity = 1
                 this.el.removeEventListener('load',onloadEnd)
