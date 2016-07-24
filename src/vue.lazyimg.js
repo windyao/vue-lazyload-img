@@ -15,46 +15,30 @@ Vue.lazyimg ={
             nohori: false
         }
         //custom scrollEnd event
-        if ( options.speed ) {
-            var cntr = 0;
-            var lastCntr = 0;
-            var diff = 0;
+        var animationFrame = (!!window.requestAnimationFrame) ? window.requestAnimationFrame : window.webkitRequestAnimationFrame;
+
+        if(options.speed){
+            var cntr = 0
+            var lastCntr = 0
+            var diff = 0
             var scrollEnd = document.createEvent('HTMLEvents');
-            scrollEnd.initEvent('scrollEnd',true,false);
-            scrollEnd.eventType = 'message';
-
-            var enterFrame = setInterval(function () {
-                if ( cntr != lastCntr ) {
-                    diff++;
-                    if(diff == 5){
-                        window.dispatchEvent(scrollEnd);
-                        cntr = lastCntr;
-                    }
-                } else {
-                    clearInterval(enterFrame);
-                    enterFrame = null;
-                }
-            }, 250);
-
-            /*
-            //android 4.3 及以下不支持requestAnimationFrame
+            scrollEnd.initEvent('scrollEnd')
+            scrollEnd.eventType = 'message'
             function enterFrame(){
-                if( cntr != lastCntr ){
-                    diff++;
+                if(cntr != lastCntr){
+                    diff++
                     if(diff == 5){
-                        window.dispatchEvent(scrollEnd);
-                        cntr = lastCntr;
+                        window.dispatchEvent(scrollEnd)
+                        cntr = lastCntr
                     }
                 }
-                requestAnimationFrame(enterFrame);
-            }            
-            window.requestAnimationFrame(enterFrame);
-            */
-
+                animationFrame(enterFrame);
+            }
+            animationFrame(enterFrame)
             document.addEventListener('scroll',function(){
-                lastCntr = cntr;
-                diff = 0;
-                cntr++;
+                lastCntr = cntr
+                diff = 0
+                cntr++
             },true)
         }
         //compute scroll speed
