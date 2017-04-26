@@ -127,6 +127,6 @@ Vue.lazyimg ={
             }.bind(this)
             this.el.addEventListener('load',onload)
         }
-        Vue.directive('lazyload',update)
+        Vue.directive('lazy',update)
     }
 };
